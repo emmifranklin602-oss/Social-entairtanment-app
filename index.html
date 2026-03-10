@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Entertainment App</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<style>
+/* --- CSS --- */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+button {
+  padding: 10px;
+  margin: 5px 0;
+  width: 49%;
+  cursor: pointer;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  background: #e0e0e0;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 5px;
+}
+video, img {
+  max-width: 100%;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <h1>Social Entertainment App</h1>
+
+  <!-- Authentication -->
+  <div id="auth">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <input id="username" placeholder="Username">
+    <input id="profile-pic" type="file">
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Feed -->
+  <div id="feed">
+    <h2>Feed</h2>
+    <textarea id="post-text" placeholder="Write a post..."></textarea>
+    <input type="file" id="post-media">
+    <button onclick="createPost()">Post</button>
+    <ul id="posts"></ul>
+  </div>
+
+  <!-- Global Chat -->
+  <div id="chat">
+    <h2>Global Chat</h2>
+    <input id="message" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+  </div>
+
+  <!-- Group Chat -->
+  <div id="groups">
+    <h2>Groups</h2>
+    <input id="group-name" placeholder="Group Name">
+    <button onclick="createGroup()">Create Group</button>
+    <ul id="group-list"></ul>
+  </div>
+
+</div>
+
+<script>
+// --- Firebase Config ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDz-wDVbDfnkTiidCZ_F_m6aOQ2Ma0rKxA",
+  authDomain: "social-entairtanment-app.firebaseapp.com",
+  projectId: "social-entairtanment-app",
+  storageBucket: "social-entairtanment-app.firebasestorage.app",
+  messagingSenderId: "487474123400",
+  appId: "1:487474123400:web:3f76d1db007a9380d8453d",
+  measurementId: "G-2SZFBP0HSW"
+};
+firebase.initializeApp(firebaseConfig);
+
+// --- References ---
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+// ---------- Auth ----------
+function signup() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const profilePic = document.getElementById("profile-pic").files[0];
+
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((cred) => {
+      const uid = cred.user.uid;
+      if(profilePic){
+        const storageRef = storage.ref().child("profiles/" + uid);
+        storageRef.put(profilePic).then(() => {
+          storageRef.getDownloadURL().then((url) => {
+            db.collection("users").doc(uid).set({username,email,profilePic:url});
+          });
+        });
+      } else {
+        db.collection("users").doc(uid).set({username,email});
+      }
+      alert("Sign up successful!");
+    })
+    .catch((err) => alert(err.message));
+}
+
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => alert("Login successful!"))
+    .catch((err) => alert(err.message));
+}
+
+function logout() {
+  auth.signOut().then(() => alert("Logged out!"));
+}
+
+// ---------- Global Chat ----------
+function sendMessage() {
+  const msg = document.getElementById("message").value;
+  if (!msg) return;
+
+  db.collection("messages").add({
+    text: msg,
+    time: Date.now(),
+    user: auth.currentUser ? auth.currentUser.email : "Anonymous"
+  });
+  document.getElementById("message").value = "";
+}
+
+db.collection("messages").orderBy("time").onSnapshot((snapshot) => {
+  const list = document.getElementById("messages");
+  list.innerHTML = "";
+  snapshot.forEach(doc => {
+    const li = document.createElement("li");
+    li.innerText = `${doc.data().user}: ${doc.data().text}`;
+    list.appendChild(li);
+  });
+});
+
+// ---------- Posts / Feed ----------
+function createPost() {
+  const text = document.getElementById("post-text").value;
+  const media = document.getElementById("post-media").files[0];
+  const user = auth.currentUser ? auth.currentUser.email : "Anonymous";
+
+  if (media) {
+    const ref = storage.ref().child("posts/" + Date.now() + "-" + media.name);
+    ref.put(media).then(() => {
+      ref.getDownloadURL().then((url) => {
+        db.collection("posts").add({text, media: url, user, time: Date.now()});
+      });
+    });
+  } else {
+    db.collection("posts").add({text, user, time: Date.now()});
+  }
+
+  document.getElementById("post-text").value = "";
+}
+
+db.collection("posts").orderBy("time","desc").onSnapshot((snapshot) => {
+  const list = document.getElementById("posts");
+  list.innerHTML = "";
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const li = document.createElement("li");
+    li.innerHTML = `${data.user}: ${data.text}`;
+    if(data.media){
+      const mediaElem = document.createElement(data.media.endsWith(".mp4") ? "video" : "img");
+      mediaElem.src = data.media;
+      if(data.media.endsWith(".mp4")) mediaElem.controls = true;
+      li.appendChild(mediaElem);
+    }
+    list.appendChild(li);
+  });
+});
+
+// ---------- Groups ----------
+function createGroup() {
+  const name = document.getElementById("group-name").value;
+  if(!name || !auth.currentUser) return;
+  db.collection("groups").add({name, members:[auth.currentUser.email], messages:[]});
+  document.getElementById("group-name").value = "";
+}
+
+db.collection("groups").onSnapshot((snapshot) => {
+  const list = document.getElementById("group-list");
+  list.innerHTML = "";
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const li = document.createElement("li");
+    li.innerText = data.name + " (" + data.members.join(", ") + ")";
+    list.appendChild(li);
+  });
+});
+</script>
+</body>
+</html>
