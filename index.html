@@ -12,49 +12,122 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
 <style>
-/* --- CSS --- */
+/* --- WhatsApp-Style CSS --- */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #ece5dd;
   display: flex;
   justify-content: center;
 }
+
 .container {
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
+  height: 95vh;
   background: #fff;
-  padding: 20px;
-  margin-top: 20px;
+  margin-top: 10px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
+
+/* Top bar */
+.header {
+  background: #075E54;
+  color: #fff;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+  gap: 10px;
 }
-button {
+.header img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+/* Chat section */
+#chat {
+  flex: 1;
   padding: 10px;
-  margin: 5px 0;
-  width: 49%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Chat bubbles */
+.message {
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+.message.self {
+  background-color: #dcf8c6;
+  align-self: flex-end;
+}
+.message.other {
+  background-color: #fff;
+  align-self: flex-start;
+}
+
+/* Input bar */
+.input-bar {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+.input-bar input[type="text"] {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+}
+.input-bar button {
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: none;
+  background: #075E54;
+  color: #fff;
   cursor: pointer;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+/* Authentication section */
+#auth {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: #f0f0f0;
 }
-li {
-  background: #e0e0e0;
+
+/* Posts feed */
+#feed {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+}
+#feed li {
+  background: #fefefe;
   margin: 5px 0;
   padding: 8px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
-video, img {
+#feed img, #feed video {
   max-width: 100%;
+  border-radius: 10px;
   margin-top: 5px;
-  border-radius: 5px;
 }
 </style>
 </head>
@@ -62,7 +135,10 @@ video, img {
 <body>
 <div class="container">
 
-  <h1>Social Entertainment App</h1>
+  <div class="header">
+    <img id="profile-img" src="" alt="Profile">
+    <span id="username-header">Social App</span>
+  </div>
 
   <!-- Authentication -->
   <div id="auth">
@@ -75,29 +151,22 @@ video, img {
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Feed -->
+  <!-- Chat -->
+  <div id="chat"></div>
+
+  <!-- Input bar -->
+  <div class="input-bar">
+    <input type="text" id="message" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <!-- Posts feed -->
   <div id="feed">
-    <h2>Feed</h2>
+    <h3>Feed</h3>
     <textarea id="post-text" placeholder="Write a post..."></textarea>
     <input type="file" id="post-media">
     <button onclick="createPost()">Post</button>
     <ul id="posts"></ul>
-  </div>
-
-  <!-- Global Chat -->
-  <div id="chat">
-    <h2>Global Chat</h2>
-    <input id="message" placeholder="Type your message...">
-    <button onclick="sendMessage()">Send</button>
-    <ul id="messages"></ul>
-  </div>
-
-  <!-- Group Chat -->
-  <div id="groups">
-    <h2>Groups</h2>
-    <input id="group-name" placeholder="Group Name">
-    <button onclick="createGroup()">Create Group</button>
-    <ul id="group-list"></ul>
   </div>
 
 </div>
@@ -135,10 +204,13 @@ function signup() {
         storageRef.put(profilePic).then(() => {
           storageRef.getDownloadURL().then((url) => {
             db.collection("users").doc(uid).set({username,email,profilePic:url});
+            document.getElementById("profile-img").src = url;
+            document.getElementById("username-header").innerText = username;
           });
         });
       } else {
         db.collection("users").doc(uid).set({username,email});
+        document.getElementById("username-header").innerText = username;
       }
       alert("Sign up successful!");
     })
@@ -149,34 +221,52 @@ function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => alert("Login successful!"))
+    .then((cred) => {
+      const uid = cred.user.uid;
+      db.collection("users").doc(uid).get().then(doc => {
+        if(doc.exists){
+          const data = doc.data();
+          document.getElementById("profile-img").src = data.profilePic || "";
+          document.getElementById("username-header").innerText = data.username || "User";
+        }
+      });
+      alert("Login successful!");
+    })
     .catch((err) => alert(err.message));
 }
 
 function logout() {
-  auth.signOut().then(() => alert("Logged out!"));
+  auth.signOut().then(() => {
+    document.getElementById("profile-img").src = "";
+    document.getElementById("username-header").innerText = "Social App";
+    alert("Logged out!");
+  });
 }
 
 // ---------- Global Chat ----------
 function sendMessage() {
   const msg = document.getElementById("message").value;
-  if (!msg) return;
+  if (!msg || !auth.currentUser) return;
 
   db.collection("messages").add({
     text: msg,
     time: Date.now(),
-    user: auth.currentUser ? auth.currentUser.email : "Anonymous"
+    user: auth.currentUser.email
   });
   document.getElementById("message").value = "";
 }
 
 db.collection("messages").orderBy("time").onSnapshot((snapshot) => {
-  const list = document.getElementById("messages");
-  list.innerHTML = "";
+  const chat = document.getElementById("chat");
+  chat.innerHTML = "";
   snapshot.forEach(doc => {
-    const li = document.createElement("li");
-    li.innerText = `${doc.data().user}: ${doc.data().text}`;
-    list.appendChild(li);
+    const data = doc.data();
+    const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add(data.user === (auth.currentUser ? auth.currentUser.email : "") ? "self" : "other");
+    div.innerText = data.user + ": " + data.text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
   });
 });
 
@@ -206,32 +296,13 @@ db.collection("posts").orderBy("time","desc").onSnapshot((snapshot) => {
   snapshot.forEach(doc => {
     const data = doc.data();
     const li = document.createElement("li");
-    li.innerHTML = `${data.user}: ${data.text}`;
+    li.innerHTML = `<b>${data.user}</b>: ${data.text}`;
     if(data.media){
       const mediaElem = document.createElement(data.media.endsWith(".mp4") ? "video" : "img");
       mediaElem.src = data.media;
       if(data.media.endsWith(".mp4")) mediaElem.controls = true;
       li.appendChild(mediaElem);
     }
-    list.appendChild(li);
-  });
-});
-
-// ---------- Groups ----------
-function createGroup() {
-  const name = document.getElementById("group-name").value;
-  if(!name || !auth.currentUser) return;
-  db.collection("groups").add({name, members:[auth.currentUser.email], messages:[]});
-  document.getElementById("group-name").value = "";
-}
-
-db.collection("groups").onSnapshot((snapshot) => {
-  const list = document.getElementById("group-list");
-  list.innerHTML = "";
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.innerText = data.name + " (" + data.members.join(", ") + ")";
     list.appendChild(li);
   });
 });
