@@ -37,16 +37,22 @@ margin:15px 0;
 border-radius:15px;
 }
 
-iframe,img{
+.card img, iframe{
 width:100%;
 border-radius:10px;
+margin-top:10px;
 }
 
 textarea{width:100%;height:100px;}
 
 button{padding:10px;margin:5px;border:none;border-radius:10px;}
 
-#reader{display:none;padding:20px;line-height:1.8;}
+#reader{
+display:none;
+padding:20px;
+line-height:1.9;
+font-size:16px;
+}
 </style>
 </head>
 
@@ -66,9 +72,9 @@ button{padding:10px;margin:5px;border:none;border-radius:10px;}
 <div id="storyFeed"></div>
 </div>
 
-<!-- POST -->
+<!-- POSTS -->
 <div id="post" class="section">
-<h2>✍️ Post</h2>
+<h2>✍️ Posts</h2>
 <textarea id="postInput"></textarea>
 <button onclick="addPost()">Post</button>
 <div id="postFeed"></div>
@@ -76,7 +82,7 @@ button{padding:10px;margin:5px;border:none;border-radius:10px;}
 
 <!-- NEWS -->
 <div id="news" class="section">
-<h2>📰 Latest News</h2>
+<h2>📰 News</h2>
 <div id="newsFeed"></div>
 </div>
 
@@ -90,6 +96,7 @@ button{padding:10px;margin:5px;border:none;border-radius:10px;}
 <div id="reader">
 <button onclick="goBack()">⬅ Back</button>
 <h2 id="title"></h2>
+<img id="img">
 <p id="content"></p>
 </div>
 
@@ -104,12 +111,19 @@ e.target.classList.add("active");
 reader.style.display="none";
 }
 
-/* STORIES */
+/* ================= STORIES ================= */
 let stories=[];
-for(let i=1;i<=100;i++){
+for(let i=1;i<=50;i++){
 stories.push({
-title:"Story "+i,
-content:"This is a long story about life, success, struggle, and growth. Keep going no matter what happens."
+title:"🔥 Story "+i,
+img:`https://picsum.photos/400/200?story${i}`,
+content:`This is a deep story ${i}.
+
+Life is not easy. Many times you will fail.
+
+But if you keep going, you will succeed.
+
+Never give up. Stay focused. Stay strong.`
 });
 }
 
@@ -117,77 +131,145 @@ function loadStories(){
 storyFeed.innerHTML="";
 stories.forEach((s,i)=>{
 storyFeed.innerHTML+=`
-<div class="card" onclick="openStory(${i})">
+<div class="card" onclick="openStory(${i},'story')">
 <h3>${s.title}</h3>
+<img src="${s.img}">
 <p>Tap to read full story</p>
 </div>`;
 });
 }
 
-/* POSTS */
+/* ================= POSTS ================= */
 let posts=[];
 function addPost(){
 let val=postInput.value;
-posts.unshift(val);
+
+posts.unshift({
+text:val,
+img:`https://picsum.photos/400/200?post${Math.random()}`
+});
+
 renderPosts();
 }
 
 function renderPosts(){
 postFeed.innerHTML="";
-posts.forEach(p=>{
-postFeed.innerHTML+=`<div class="card">${p}</div>`;
+posts.forEach((p,i)=>{
+postFeed.innerHTML+=`
+<div class="card" onclick="openPost(${i})">
+<p>${p.text}</p>
+<img src="${p.img}">
+</div>`;
 });
 }
 
-/* NEWS */
-let news=[
-"🚨 Nigeria strengthening global partnerships and trade opportunities.",
-"⚠️ Security challenges continue in northern Nigeria.",
-"💰 New financial rules introduced to control economy.",
-"🔥 Entertainment industry growing rapidly in Nigeria.",
-"📱 Tech and AI rising fast in Africa."
-];
+function openPost(i){
+reader.style.display="block";
+hideAll();
+title.innerText="Post";
+img.src=posts[i].img;
+content.innerText=posts[i].text+" This is expanded content with more explanation and details.";
+}
+
+/* ================= NEWS ================= */
+let news=[];
+for(let i=1;i<=30;i++){
+news.push({
+title:"📰 News "+i,
+img:`https://picsum.photos/400/200?news${i}`,
+content:`Breaking news ${i}.
+
+This is detailed news content explaining events, economy, technology, and society.
+
+Stay informed and updated.`
+});
+}
 
 function loadNews(){
 newsFeed.innerHTML="";
 news.forEach((n,i)=>{
 newsFeed.innerHTML+=`
 <div class="card" onclick="openNews(${i})">
-<h3>${n}</h3>
-<p>Tap to read more</p>
+<h3>${n.title}</h3>
+<img src="${n.img}">
+<p>Tap to read</p>
 </div>`;
 });
 }
 
 function openNews(i){
 reader.style.display="block";
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
-title.innerText="📰 Full News";
-content.innerText=news[i]+" This is extended detailed news explanation to make reading longer and more interesting like real news apps.";
+hideAll();
+title.innerText=news[i].title;
+img.src=news[i].img;
+content.innerText=news[i].content;
 }
 
-/* COMMUNITY */
+/* ================= COMMUNITY ================= */
 let community=[];
-for(let i=1;i<=50;i++){
-community.push("🔥 Community post "+i+" - Share your thoughts and ideas.");
+for(let i=1;i<=30;i++){
+community.push({
+text:"🔥 Community discussion "+i,
+img:`https://picsum.photos/400/200?community${i}`
+});
 }
 
 function loadCommunity(){
 communityFeed.innerHTML="";
-community.forEach(c=>{
-communityFeed.innerHTML+=`<div class="card">${c}</div>`;
+community.forEach((c,i)=>{
+communityFeed.innerHTML+=`
+<div class="card" onclick="openCommunity(${i})">
+<p>${c.text}</p>
+<img src="${c.img}">
+</div>`;
 });
 }
 
-/* OPEN STORY */
-function openStory(i){
+function openCommunity(i){
 reader.style.display="block";
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
-title.innerText=stories[i].title;
-content.innerText=stories[i].content;
+hideAll();
+title.innerText="Community";
+img.src=community[i].img;
+content.innerText=community[i].text+" More detailed discussion and interaction.";
 }
 
-/* BACK */
+/* ================= VIDEOS + MUSIC ================= */
+
+function addMedia(){
+
+let media = document.createElement("div");
+
+media.innerHTML = `
+<h2>🎥 Videos</h2>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o" allowfullscreen></iframe>
+</div>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/jcg5YnZqtRo" allowfullscreen></iframe>
+</div>
+
+<h2>🎵 Music Videos</h2>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/hVEp-P2-rqY" allowfullscreen></iframe>
+</div>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/0zB6rWvL2P8" allowfullscreen></iframe>
+</div>
+`;
+
+document.getElementById("stories").appendChild(media);
+
+}
+
+/* ================= HELPERS ================= */
+function hideAll(){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
+}
+
 function goBack(){
 reader.style.display="none";
 document.getElementById("stories").classList.add("show");
@@ -197,6 +279,7 @@ document.getElementById("stories").classList.add("show");
 loadStories();
 loadNews();
 loadCommunity();
+addMedia();
 
 </script>
 
