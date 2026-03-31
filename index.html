@@ -5,93 +5,98 @@
   <title>Emmanuel's Entertainment Universe</title>
   <style>
     body {
-      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      background: #121212;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
+      margin: 0;
     }
-    .portal-btn {
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #1f1f1f;
+      padding: 10px;
+      position: sticky;
+      top: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
       border: none;
-      padding: 15px 30px;
-      margin: 10px;
-      border-radius: 30px;
+      background: none;
+      color: #ccc;
+      font-size: 16px;
       cursor: pointer;
-      font-size: 18px;
-      transition: transform 0.2s;
     }
-    .portal-btn:hover {
-      transform: scale(1.1);
+    .tab-btn.active {
+      color: #ffcc00;
+      border-bottom: 2px solid #ffcc00;
     }
-    .portal-content {
+    .tab-content {
       display: none;
-      margin-top: 20px;
       padding: 20px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      text-align: left;
+    }
+    .row {
+      background: #1f1f1f;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .row:hover {
+      background: #333;
     }
     h2 { color: #ffcc00; }
   </style>
 </head>
 <body>
-  <h1>Welcome to Emmanuel's Entertainment Universe</h1>
-  <button class="portal-btn" onclick="showPortal('stories')">Stories</button>
-  <button class="portal-btn" onclick="showPortal('entertainment')">Entertainment</button>
-  <button class="portal-btn" onclick="showPortal('community')">Community</button>
-  <button class="portal-btn" onclick="showPortal('knowledge')">Knowledge</button>
-  <button class="portal-btn" onclick="showPortal('extras')">Extras</button>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('chats')">Chats</button>
+    <button class="tab-btn" onclick="showTab('stories')">Stories</button>
+    <button class="tab-btn" onclick="showTab('entertainment')">Entertainment</button>
+    <button class="tab-btn" onclick="showTab('knowledge')">Knowledge</button>
+  </div>
+
+  <!-- CHATS -->
+  <div id="chats" class="tab-content" style="display:block;">
+    <h2>Community Chats</h2>
+    <div class="row">1. "Guy, you don chop today? Na jollof dey reign!"</div>
+    <div class="row">2. "Abeg, who get latest meme make we laugh small?"</div>
+    <div class="row">3. "Na hustle dey pay, but enjoyment dey balance am."</div>
+  </div>
 
   <!-- STORIES -->
-  <div id="stories" class="portal-content">
+  <div id="stories" class="tab-content">
     <h2>Stories</h2>
-    <h3>Love Story</h3>
-    <p>From the beginning, na so Emeka see Ada for bus stop. Him heart dey beat like drum, and the day wey start ordinary turn to wahala wey sweet and bitter...</p>
-    <h3>Hustle Story</h3>
-    <p>From the beginning, na Monday morning. Lagos traffic choke, but Chinedu no gree. Him dey sell gala, pure water, and still dey dream big...</p>
-    <h3>Comedy Story</h3>
-    <p>From the beginning, na one man waka enter shop ask for free bread. The seller laugh tire, say “bros, na only smile free for here!”...</p>
-    <h3>Motivation Story</h3>
-    <p>From the beginning, na small boy dey village wey no get shoe. Today, na CEO wey dey inspire thousands with him story...</p>
+    <div class="row">1. Love Story – From the beginning, Emeka see Ada for bus stop...</div>
+    <div class="row">2. Hustle Story – From the beginning, Lagos traffic choke, but Chinedu no gree...</div>
+    <div class="row">3. Comedy Story – From the beginning, one man ask for free bread...</div>
+    <div class="row">4. Motivation Story – From the beginning, small boy wey no get shoe become CEO...</div>
+    <div class="row">5. Lost Child Story – From the beginning, village dey quiet until one pikin waka comot... Musicians dey sing hope for the search...</div>
   </div>
 
   <!-- ENTERTAINMENT -->
-  <div id="entertainment" class="portal-content">
+  <div id="entertainment" class="tab-content">
     <h2>Entertainment</h2>
-    <p>🎵 Afrobeats Playlist: Burna Boy, Wizkid, Davido</p>
-    <p>😂 Comedy Skit: "Naija hustle no be beans!"</p>
-    <p>🎬 Nollywood Classic: Living in Bondage summary</p>
-    <p>🔥 Trending Gist: "Who chop the last jollof at the party?"</p>
-  </div>
-
-  <!-- COMMUNITY -->
-  <div id="community" class="portal-content">
-    <h2>Community Corner</h2>
-    <p>"Guy, you don chop today? Na jollof dey reign!"</p>
-    <p>"Abeg, who get latest meme make we laugh small?"</p>
-    <p>"Na hustle dey pay, but enjoyment dey balance am."</p>
+    <div class="row">1. 🎵 Afrobeats Playlist – Burna Boy, Wizkid, Davido</div>
+    <div class="row">2. 🎬 Nollywood Classic – Living in Bondage summary</div>
+    <div class="row">3. 😂 Comedy Skit – "Naija hustle no be beans!"</div>
+    <div class="row">4. 🎤 Musicians – Tiwa Savage, Olamide, Rema</div>
   </div>
 
   <!-- KNOWLEDGE -->
-  <div id="knowledge" class="portal-content">
+  <div id="knowledge" class="tab-content">
     <h2>Knowledge Hub</h2>
-    <p>📖 Tech: How Web3 go change Naija business.</p>
-    <p>🌍 Lifestyle: Top 5 ways to enjoy Port Harcourt weekend.</p>
-    <p>💡 Culture: Why Pidgin dey unite Nigerians.</p>
-  </div>
-
-  <!-- EXTRAS -->
-  <div id="extras" class="portal-content">
-    <h2>Extras</h2>
-    <p>✨ Fun Fact: The word "Naija" dey represent unity + vibe.</p>
-    <p>💬 Quote: "No matter how e be, better days dey come."</p>
-    <p>📅 Daily Update: Today na March 31, 2026—make you shine!</p>
+    <div class="row">1. Tech – How Web3 go change Naija business</div>
+    <div class="row">2. Lifestyle – Top 5 ways to enjoy Port Harcourt weekend</div>
+    <div class="row">3. Culture – Why Pidgin dey unite Nigerians</div>
   </div>
 
   <script>
-    function showPortal(id) {
-      document.querySelectorAll('.portal-content').forEach(div => div.style.display = 'none');
+    function showTab(id) {
+      document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById(id).style.display = 'block';
+      event.target.classList.add('active');
     }
   </script>
 </body>
