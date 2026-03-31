@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emmanuel's Entertainment Universe</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .portal-btn {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      border: none;
+      padding: 15px 30px;
+      margin: 10px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.2s;
+    }
+    .portal-btn:hover {
+      transform: scale(1.1);
+    }
+    .portal-content {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      text-align: left;
+    }
+    h2 { color: #ffcc00; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Emmanuel's Entertainment Universe</h1>
+  <button class="portal-btn" onclick="showPortal('stories')">Stories</button>
+  <button class="portal-btn" onclick="showPortal('entertainment')">Entertainment</button>
+  <button class="portal-btn" onclick="showPortal('community')">Community</button>
+  <button class="portal-btn" onclick="showPortal('knowledge')">Knowledge</button>
+  <button class="portal-btn" onclick="showPortal('extras')">Extras</button>
+
+  <!-- STORIES -->
+  <div id="stories" class="portal-content">
+    <h2>Stories</h2>
+    <h3>Love Story</h3>
+    <p>From the beginning, na so Emeka see Ada for bus stop. Him heart dey beat like drum, and the day wey start ordinary turn to wahala wey sweet and bitter...</p>
+    <h3>Hustle Story</h3>
+    <p>From the beginning, na Monday morning. Lagos traffic choke, but Chinedu no gree. Him dey sell gala, pure water, and still dey dream big...</p>
+    <h3>Comedy Story</h3>
+    <p>From the beginning, na one man waka enter shop ask for free bread. The seller laugh tire, say “bros, na only smile free for here!”...</p>
+    <h3>Motivation Story</h3>
+    <p>From the beginning, na small boy dey village wey no get shoe. Today, na CEO wey dey inspire thousands with him story...</p>
+  </div>
+
+  <!-- ENTERTAINMENT -->
+  <div id="entertainment" class="portal-content">
+    <h2>Entertainment</h2>
+    <p>🎵 Afrobeats Playlist: Burna Boy, Wizkid, Davido</p>
+    <p>😂 Comedy Skit: "Naija hustle no be beans!"</p>
+    <p>🎬 Nollywood Classic: Living in Bondage summary</p>
+    <p>🔥 Trending Gist: "Who chop the last jollof at the party?"</p>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div id="community" class="portal-content">
+    <h2>Community Corner</h2>
+    <p>"Guy, you don chop today? Na jollof dey reign!"</p>
+    <p>"Abeg, who get latest meme make we laugh small?"</p>
+    <p>"Na hustle dey pay, but enjoyment dey balance am."</p>
+  </div>
+
+  <!-- KNOWLEDGE -->
+  <div id="knowledge" class="portal-content">
+    <h2>Knowledge Hub</h2>
+    <p>📖 Tech: How Web3 go change Naija business.</p>
+    <p>🌍 Lifestyle: Top 5 ways to enjoy Port Harcourt weekend.</p>
+    <p>💡 Culture: Why Pidgin dey unite Nigerians.</p>
+  </div>
+
+  <!-- EXTRAS -->
+  <div id="extras" class="portal-content">
+    <h2>Extras</h2>
+    <p>✨ Fun Fact: The word "Naija" dey represent unity + vibe.</p>
+    <p>💬 Quote: "No matter how e be, better days dey come."</p>
+    <p>📅 Daily Update: Today na March 31, 2026—make you shine!</p>
+  </div>
+
+  <script>
+    function showPortal(id) {
+      document.querySelectorAll('.portal-content').forEach(div => div.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+  </script>
+</body>
+</html>
