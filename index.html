@@ -17,77 +17,73 @@
       display: flex;
       justify-content: space-around;
       background: #111;
-      padding: 15px;
+      padding: 20px;
       position: sticky;
       top: 0;
     }
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 15px;
       border: none;
       background: none;
       color: #888;
-      font-size: 18px;
+      font-size: 22px;
       cursor: pointer;
+      font-weight: bold;
     }
     .tab-btn.active {
       color: #00ffcc;
-      border-bottom: 3px solid #00ffcc;
+      border-bottom: 4px solid #00ffcc;
     }
     .tab-content {
       flex: 1;
       overflow-y: auto;
       display: none;
-      padding: 20px;
+      padding: 25px;
+      font-size: 20px;
     }
     .row {
       background: #1a1a1a;
-      margin: 10px 0;
-      padding: 15px;
-      border-radius: 8px;
+      margin: 15px 0;
+      padding: 20px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
+      font-weight: bold;
     }
     .row:hover {
       background: #333;
     }
     .story-chapter {
-      margin-top: 20px;
-      padding: 20px;
+      margin-top: 25px;
+      padding: 25px;
       background: #222;
-      border-radius: 10px;
-      line-height: 1.6;
-      font-size: 18px;
+      border-radius: 12px;
+      line-height: 1.8;
+      font-size: 20px;
+      font-weight: bold;
     }
-    h2 { color: #00ffcc; }
+    h2 { color: #00ffcc; font-size: 28px; }
   </style>
 </head>
 <body>
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('chats')">Chats</button>
-    <button class="tab-btn" onclick="showTab('stories')">Stories</button>
+    <button class="tab-btn active" onclick="showTab('stories')">Stories</button>
     <button class="tab-btn" onclick="showTab('entertainment')">Entertainment</button>
+    <button class="tab-btn" onclick="showTab('apps')">Apps</button>
+    <button class="tab-btn" onclick="showTab('tips')">Tips</button>
     <button class="tab-btn" onclick="showTab('knowledge')">Knowledge</button>
     <button class="tab-btn" onclick="showTab('extras')">Extras</button>
   </div>
 
-  <!-- CHATS -->
-  <div id="chats" class="tab-content" style="display:block;">
-    <h2>Community Chats</h2>
-    <div class="row">1. "Guy, you don chop today? Na jollof dey reign!"</div>
-    <div class="row">2. "Abeg, who get latest meme make we laugh small?"</div>
-    <div class="row">3. "Na hustle dey pay, but enjoyment dey balance am."</div>
-  </div>
-
   <!-- STORIES -->
-  <div id="stories" class="tab-content">
+  <div id="stories" class="tab-content" style="display:block;">
     <h2>Stories</h2>
     <div class="row" onclick="openStory('lostChild')">1. Lost Child Story</div>
     <div class="row" onclick="openStory('love')">2. Love Story</div>
     <div class="row" onclick="openStory('hustle')">3. Hustle Story</div>
     <div class="row" onclick="openStory('comedy')">4. Comedy Story</div>
     <div class="row" onclick="openStory('motivation')">5. Motivation Story</div>
-
     <div id="storyDisplay" class="story-chapter"></div>
   </div>
 
@@ -98,6 +94,26 @@
     <div class="row">2. 🎤 Musicians – Tiwa Savage, Olamide, Rema</div>
     <div class="row">3. 🎬 Nollywood Classic – Living in Bondage summary</div>
     <div class="row">4. 😂 Comedy Skit – "Naija hustle no be beans!"</div>
+  </div>
+
+  <!-- APPS -->
+  <div id="apps" class="tab-content">
+    <h2>Valuable Apps</h2>
+    <div class="row">1. WhatsApp – Chat & connect</div>
+    <div class="row">2. Instagram – Share photos & reels</div>
+    <div class="row">3. Spotify – Stream music</div>
+    <div class="row">4. Canva – Design graphics</div>
+    <div class="row">5. Paystack – Online payments</div>
+  </div>
+
+  <!-- TIPS -->
+  <div id="tips" class="tab-content">
+    <h2>Life & Business Tips</h2>
+    <div class="row">1. Hustle smart, not just hard.</div>
+    <div class="row">2. Save small, invest big.</div>
+    <div class="row">3. Learn skills online daily.</div>
+    <div class="row">4. Network with people wey fit help you grow.</div>
+    <div class="row">5. Balance hustle with enjoyment.</div>
   </div>
 
   <!-- KNOWLEDGE -->
