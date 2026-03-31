@@ -14,21 +14,18 @@
     box-sizing: border-box;
 }
 
-/* BODY */
 body {
     background: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
+    color: white;
+    font-family: Arial;
 }
 
-/* NAVBAR */
+/* NAV */
 .nav {
     display: flex;
     justify-content: space-around;
-    background: #000;
     padding: 15px;
-    position: sticky;
-    top: 0;
+    background: black;
     border-bottom: 2px solid #00ffc3;
 }
 
@@ -52,8 +49,8 @@ body {
     margin: 20px auto;
     display: block;
     padding: 15px;
+    border-radius: 15px;
     font-size: 18px;
-    border-radius: 10px;
     border: none;
 }
 
@@ -73,13 +70,13 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* CARDS */
+/* CARD */
 .card {
     width: 100%;
     padding: 20px;
     margin: 15px 0;
-    border-radius: 15px;
-    background: linear-gradient(90deg, #111, #222);
+    border-radius: 20px;
+    background: linear-gradient(90deg, #111, #333);
     font-size: clamp(16px, 4vw, 22px);
     font-weight: bold;
     transition: 0.3s;
@@ -88,21 +85,7 @@ h1 {
 /* HOVER */
 .card:hover {
     transform: scale(1.05);
-    background: #333;
-}
-
-/* ICON */
-.icon {
-    font-size: 25px;
-    margin-right: 10px;
-}
-
-/* FOOTER */
-footer {
-    text-align: center;
-    padding: 30px;
-    background: #111;
-    margin-top: 30px;
+    background: #444;
 }
 
 /* BUTTON */
@@ -115,7 +98,13 @@ footer {
     text-align: center;
     border-radius: 10px;
     text-decoration: none;
-    font-weight: bold;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #111;
 }
 
 </style>
@@ -125,33 +114,30 @@ footer {
 
 <!-- NAV -->
 <div class="nav">
-    <button onclick="showTab('apps')" class="active">Apps</button>
-    <button onclick="showTab('entertainment')">Entertainment</button>
-    <button onclick="showTab('tips')">Tips</button>
-    <button onclick="showTab('knowledge')">Knowledge</button>
+    <button onclick="showTab(event,'apps')" class="active">Apps</button>
+    <button onclick="showTab(event,'entertainment')">Entertainment</button>
+    <button onclick="showTab(event,'tips')">Tips</button>
+    <button onclick="showTab(event,'knowledge')">Knowledge</button>
 </div>
 
 <!-- SEARCH -->
-<input type="text" class="search" placeholder="Search anything...">
+<input class="search" placeholder="Search anything...">
 
 <!-- APPS -->
 <div id="apps" class="section show">
-<h1>🔥 Valuable Apps</h1>
+<h1>🔥 Apps</h1>
 
-<div class="card">📱 WhatsApp – Chat & connect
+<div class="card">📱 WhatsApp
 <a href="https://wa.me" class="link-btn">Open</a></div>
 
-<div class="card">📸 Instagram – Share photos
+<div class="card">📸 Instagram
 <a href="https://instagram.com" class="link-btn">Open</a></div>
 
-<div class="card">🎵 Spotify – Music streaming
+<div class="card">🎵 Spotify
 <a href="https://spotify.com" class="link-btn">Open</a></div>
 
-<div class="card">🎨 Canva – Design graphics
+<div class="card">🎨 Canva
 <a href="https://canva.com" class="link-btn">Open</a></div>
-
-<div class="card">💰 Paystack – Payments
-<a href="https://paystack.com" class="link-btn">Open</a></div>
 
 </div>
 
@@ -161,8 +147,8 @@ footer {
 
 <div class="card">🎥 Watch Videos</div>
 <div class="card">🎮 Play Games</div>
-<div class="card">🎵 Listen to Music</div>
-<div class="card">😂 Memes & Fun</div>
+<div class="card">🎵 Music</div>
+<div class="card">😂 Funny Content</div>
 
 </div>
 
@@ -170,9 +156,9 @@ footer {
 <div id="tips" class="section">
 <h1>💡 Tips</h1>
 
-<div class="card">🔥 How to make money online</div>
-<div class="card">🚀 How to grow fast</div>
-<div class="card">📈 Productivity hacks</div>
+<div class="card">🔥 Make money online</div>
+<div class="card">📈 Grow fast</div>
+<div class="card">⚡ Be productive</div>
 
 </div>
 
@@ -195,16 +181,17 @@ footer {
 <!-- SCRIPT -->
 <script>
 
-function showTab(tabId) {
+function showTab(event, tabId) {
 
     let sections = document.querySelectorAll(".section");
     let buttons = document.querySelectorAll(".nav button");
 
+    // hide all
     sections.forEach(sec => sec.classList.remove("show"));
     buttons.forEach(btn => btn.classList.remove("active"));
 
+    // show selected
     document.getElementById(tabId).classList.add("show");
-
     event.target.classList.add("active");
 }
 
