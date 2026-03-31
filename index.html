@@ -6,30 +6,23 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+body{background:black;color:white;font-family:Arial;}
 
-body{
-background:black;
-color:white;
-font-family:Arial;
-}
-
-/* NAV */
 .nav{
 display:flex;
 overflow-x:auto;
-padding:15px;
-border-bottom:2px solid #00ffc3;
 gap:10px;
+padding:10px;
+border-bottom:2px solid #00ffc3;
 }
 
 .nav button{
 background:#111;
-border:none;
 color:white;
+border:none;
 padding:10px;
 border-radius:10px;
-font-size:14px;
-min-width:80px;
+min-width:90px;
 }
 
 .active{background:#00ffc3;color:black;}
@@ -37,43 +30,23 @@ min-width:80px;
 .section{display:none;padding:20px;}
 .show{display:block;}
 
-h1{
-font-size:28px;
-margin-bottom:15px;
-}
-
-/* CARD */
 .card{
 background:#111;
-padding:15px;
-margin:12px 0;
+padding:20px;
+margin:15px 0;
 border-radius:15px;
 }
 
-.card img, iframe{
+iframe,img{
 width:100%;
 border-radius:10px;
 }
 
-/* BIG CARD */
-.big{
-padding:25px;
-font-size:18px;
-}
+textarea{width:100%;height:100px;}
 
-/* MUSIC GRID */
-.music-grid{
-display:grid;
-grid-template-columns:1fr;
-gap:15px;
-}
+button{padding:10px;margin:5px;border:none;border-radius:10px;}
 
-/* READER */
-#reader{
-display:none;
-padding:20px;
-line-height:1.7;
-}
+#reader{display:none;padding:20px;line-height:1.8;}
 </style>
 </head>
 
@@ -82,32 +55,35 @@ line-height:1.7;
 <!-- NAV -->
 <div class="nav">
 <button onclick="showTab(event,'stories')" class="active">Stories</button>
-<button onclick="showTab(event,'music')">Music</button>
 <button onclick="showTab(event,'post')">Post</button>
+<button onclick="showTab(event,'news')">News</button>
+<button onclick="showTab(event,'community')">Community</button>
 </div>
 
 <!-- STORIES -->
 <div id="stories" class="section show">
-<h1>📖 Stories</h1>
+<h2>📖 Stories</h2>
 <div id="storyFeed"></div>
-<div id="extraContent"></div>
-</div>
-
-<!-- MUSIC -->
-<div id="music" class="section">
-
-<h1>🎵 Music Hub</h1>
-
-<div id="musicContent"></div>
-
 </div>
 
 <!-- POST -->
 <div id="post" class="section">
-<h1>✍️ Post</h1>
-<textarea id="postInput" placeholder="Write something..."></textarea>
+<h2>✍️ Post</h2>
+<textarea id="postInput"></textarea>
 <button onclick="addPost()">Post</button>
 <div id="postFeed"></div>
+</div>
+
+<!-- NEWS -->
+<div id="news" class="section">
+<h2>📰 Latest News</h2>
+<div id="newsFeed"></div>
+</div>
+
+<!-- COMMUNITY -->
+<div id="community" class="section">
+<h2>🌍 Community</h2>
+<div id="communityFeed"></div>
 </div>
 
 <!-- READER -->
@@ -130,25 +106,80 @@ reader.style.display="none";
 
 /* STORIES */
 let stories=[];
-
-for(let i=1;i<=200;i++){
+for(let i=1;i<=100;i++){
 stories.push({
-title:"🔥 Story "+i,
-content:"Never give up. Keep pushing. Success will come."
+title:"Story "+i,
+content:"This is a long story about life, success, struggle, and growth. Keep going no matter what happens."
 });
 }
 
 function loadStories(){
 storyFeed.innerHTML="";
-stories.slice(0,40).forEach((s,i)=>{
+stories.forEach((s,i)=>{
 storyFeed.innerHTML+=`
-<div class="card big" onclick="openStory(${i})">
-${s.title}
+<div class="card" onclick="openStory(${i})">
+<h3>${s.title}</h3>
+<p>Tap to read full story</p>
 </div>`;
 });
 }
 
-/* OPEN */
+/* POSTS */
+let posts=[];
+function addPost(){
+let val=postInput.value;
+posts.unshift(val);
+renderPosts();
+}
+
+function renderPosts(){
+postFeed.innerHTML="";
+posts.forEach(p=>{
+postFeed.innerHTML+=`<div class="card">${p}</div>`;
+});
+}
+
+/* NEWS */
+let news=[
+"🚨 Nigeria strengthening global partnerships and trade opportunities.",
+"⚠️ Security challenges continue in northern Nigeria.",
+"💰 New financial rules introduced to control economy.",
+"🔥 Entertainment industry growing rapidly in Nigeria.",
+"📱 Tech and AI rising fast in Africa."
+];
+
+function loadNews(){
+newsFeed.innerHTML="";
+news.forEach((n,i)=>{
+newsFeed.innerHTML+=`
+<div class="card" onclick="openNews(${i})">
+<h3>${n}</h3>
+<p>Tap to read more</p>
+</div>`;
+});
+}
+
+function openNews(i){
+reader.style.display="block";
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
+title.innerText="📰 Full News";
+content.innerText=news[i]+" This is extended detailed news explanation to make reading longer and more interesting like real news apps.";
+}
+
+/* COMMUNITY */
+let community=[];
+for(let i=1;i<=50;i++){
+community.push("🔥 Community post "+i+" - Share your thoughts and ideas.");
+}
+
+function loadCommunity(){
+communityFeed.innerHTML="";
+community.forEach(c=>{
+communityFeed.innerHTML+=`<div class="card">${c}</div>`;
+});
+}
+
+/* OPEN STORY */
 function openStory(i){
 reader.style.display="block";
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
@@ -162,105 +193,10 @@ reader.style.display="none";
 document.getElementById("stories").classList.add("show");
 }
 
-/* POSTS */
-let posts=[];
-
-function addPost(){
-let val=postInput.value;
-posts.unshift(val);
-renderPosts();
-}
-
-function renderPosts(){
-postFeed.innerHTML="";
-posts.slice(0,20).forEach(p=>{
-postFeed.innerHTML+=`<div class="card">${p}</div>`;
-});
-}
-
-/* ================= */
-/* 🎵 MUSIC SYSTEM */
-/* ================= */
-
-let musicSections = {
-"🔥 Trending":[
-"Sj6Wdr2vB7o","jcg5YnZqtRo"
-],
-"🎤 Wizkid":[
-"0zB6rWvL2P8","4NRXx6U8ABQ"
-],
-"🎤 Davido":[
-"hVEp-P2-rqY","2zToEPpFEN8"
-],
-"🎤 Rema":[
-"t9xwN1R5zT0","kPa7bsKwL-c"
-],
-"🎤 Burna Boy":[
-"421w1j87fEM","9bZkp7q19f0"
-],
-"🎤 Tekno":[
-"4b5s2p9Xn7c","3AtDnEC4zak"
-],
-"💃 Party":[
-"ZbZSe6N_BXs","OPf0YbXqDm0"
-],
-"🎧 Chill":[
-"3JZ4pnNtyxQ","Sj6Wdr2vB7o"
-],
-"🚀 Motivation":[
-"jcg5YnZqtRo","ZbZSe6N_BXs"
-],
-"🌍 Global":[
-"OPf0YbXqDm0","3JZ4pnNtyxQ"
-]
-};
-
-function loadMusic(){
-
-let html="";
-
-for(let section in musicSections){
-
-html+=`<h1>${section}</h1>`;
-html+=`<div class="music-grid">`;
-
-musicSections[section].forEach(id=>{
-html+=`
-<div class="card">
-<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
-</div>`;
-});
-
-html+=`</div>`;
-}
-
-musicContent.innerHTML=html;
-}
-
-/* EXTRA CONTENT */
-function loadExtra(){
-let extra="";
-
-for(let i=1;i<=30;i++){
-extra+=`<div class="card">💡 Tip ${i}: Stay focused.</div>`;
-}
-
-for(let i=1;i<=20;i++){
-extra+=`
-<div class="card">
-🗳 Poll ${i}
-<button onclick="alert('Success')">Success</button>
-<button onclick="alert('Money')">Money</button>
-</div>`;
-}
-
-extraContent.innerHTML=extra;
-}
-
 /* INIT */
 loadStories();
-loadMusic();
-loadExtra();
+loadNews();
+loadCommunity();
 
 </script>
 
