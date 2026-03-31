@@ -10,7 +10,6 @@ body{background:black;color:white;font-family:Arial;}
 
 .nav{display:flex;justify-content:space-around;padding:15px;border-bottom:2px solid #00ffc3;}
 .nav button{background:none;border:none;color:white;font-size:4vw;font-weight:bold;}
-
 .active{color:#00ffc3;}
 
 .section{display:none;padding:20px;}
@@ -26,7 +25,7 @@ border-radius:20px;
 cursor:pointer;
 }
 
-.card img{
+.card img, iframe, video{
 width:100%;
 border-radius:10px;
 margin-top:10px;
@@ -39,7 +38,6 @@ border:none;
 border-radius:10px;
 }
 
-/* reader */
 #reader{
 display:none;
 padding:20px;
@@ -50,15 +48,12 @@ line-height:1.7;
 
 <body>
 
-<!-- NAV -->
 <div class="nav">
 <button onclick="showTab(event,'stories')" class="active">Stories</button>
 <button onclick="showTab(event,'post')">Post</button>
 </div>
 
-<!-- STORIES -->
 <div id="stories" class="section show">
-
 <h1>📖 Stories Feed</h1>
 
 <div>
@@ -71,23 +66,17 @@ line-height:1.7;
 </div>
 
 <div id="storyFeed"></div>
-
 <div id="extraContent"></div>
-
 </div>
 
-<!-- POST -->
 <div id="post" class="section">
 <h1>✍️ Post Story</h1>
-
 <input id="titleInput" placeholder="Title"><br><br>
 <textarea id="storyInput" placeholder="Write story..." style="width:100%;height:120px;"></textarea><br>
 <input id="imageInput" placeholder="Image URL"><br>
 <button onclick="addStory()">Post</button>
-
 </div>
 
-<!-- READER -->
 <div id="reader">
 <button onclick="goBack()">⬅ Back</button>
 <button onclick="continueReading()">▶ Continue</button>
@@ -109,42 +98,31 @@ e.target.classList.add("active");
 reader.style.display="none";
 }
 
-/* DATA */
+/* STORIES */
 let categories=["Hustle","Money","Motivation","Love","Pidgin"];
 let stories=[];
 
-/* 🔥 500 STORIES */
 for(let i=1;i<=500;i++){
 let cat=categories[i%categories.length];
 stories.push({
 title:`🔥 ${cat} Story ${i}`,
 category:cat,
-content:`${cat} story ${i}.
-
-Stay focused.
-Stay consistent.
-
-Never give up.`,
+content:`${cat} story ${i}. Stay consistent. Never give up.`,
 img:`https://picsum.photos/400/200?${i}`
 });
 }
 
-/* 👑 SPECIAL STORY */
+/* QUEEN STORY */
 stories.unshift({
 title:"👑 Queen Adaeze",
 category:"Legend",
-content:`A powerful African story about pride and wisdom.
-
-Adaeze learned humility after making wrong choices.
-
-Lesson: choose wisely.`,
+content:`Adaeze was a proud princess who learned wisdom through hardship. Pride can destroy, humility builds.`,
 img:"https://picsum.photos/400/200?queen"
 });
 
-/* LOAD */
+/* LOAD STORIES */
 function loadStories(filter="All"){
 storyFeed.innerHTML="";
-
 stories.slice(0,50).forEach((s,i)=>{
 if(filter==="All"||s.category===filter){
 storyFeed.innerHTML+=`
@@ -157,18 +135,11 @@ storyFeed.innerHTML+=`
 });
 }
 
-/* FILTER */
-function filterCategory(cat){
-loadStories(cat);
-}
-
-/* OPEN */
+/* OPEN STORY */
 function openStory(i){
 localStorage.setItem("lastStory",i);
-
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
 reader.style.display="block";
-
 title.innerText=stories[i].title;
 content.innerText=stories[i].content;
 img.src=stories[i].img;
@@ -177,8 +148,8 @@ img.src=stories[i].img;
 /* BACK */
 function goBack(){
 reader.style.display="none";
-storiesSection=document.getElementById("stories");
-storiesSection.classList.add("show");
+stories.classList?.add("show");
+document.getElementById("stories").classList.add("show");
 }
 
 /* CONTINUE */
@@ -205,44 +176,61 @@ stories.unshift({title:t,content:c,img:i,category:"User"});
 loadStories();
 }
 
-/* ========================= */
-/* 🔥 EXTRA (5000+ SYSTEM) */
-/* ========================= */
+/* ================= */
+/* EXTRA CONTENT */
+/* ================= */
 
-let extraHTML="";
+let extra="";
 
 /* POSTS */
-for(let i=1;i<=100;i++){
-extraHTML+=`<div class="card">🔥 Post ${i}: Stay consistent and grow daily.</div>`;
+for(let i=1;i<=50;i++){
+extra+=`<div class="card">🔥 Post ${i}: Stay consistent and grow.</div>`;
 }
 
 /* TIPS */
-for(let i=1;i<=100;i++){
-extraHTML+=`<div class="card">💡 Tip ${i}: Learn skills, avoid distractions.</div>`;
+for(let i=1;i<=50;i++){
+extra+=`<div class="card">💡 Tip ${i}: Learn daily and improve.</div>`;
 }
 
+/* VIDEOS */
+let vids=[
+"Sj6Wdr2vB7o","jcg5YnZqtRo","3JZ4pnNtyxQ","OPf0YbXqDm0","ZbZSe6N_BXs"
+];
+extra+=`<h1>🎥 Videos</h1>`;
+vids.sort(()=>0.5-Math.random()).forEach(v=>{
+extra+=`<div class="card"><iframe src="https://www.youtube.com/embed/${v}" allowfullscreen></iframe></div>`;
+});
+
 /* MUSIC */
-for(let i=1;i<=20;i++){
-extraHTML+=`
-<div class="card">
-🎵 Music ${i}
-<audio controls>
-<source src="https://www.w3schools.com/html/horse.mp3">
-</audio>
-</div>`;
+let artists={
+"Wizkid":["0zB6rWvL2P8","4NRXx6U8ABQ"],
+"Rema":["t9xwN1R5zT0","kPa7bsKwL-c"],
+"Davido":["hVEp-P2-rqY","2zToEPpFEN8"],
+"Burna Boy":["421w1j87fEM","9bZkp7q19f0"],
+"Tekno":["4b5s2p9Xn7c","3AtDnEC4zak"]
+};
+
+extra+=`<h1>🎵 Naija Music</h1>`;
+
+for(let a in artists){
+extra+=`<h2>${a}</h2>`;
+artists[a].forEach(id=>{
+extra+=`<div class="card"><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe></div>`;
+});
 }
 
 /* POLLS */
+extra+=`<h1>🗳 Polls</h1>`;
 for(let i=1;i<=20;i++){
-extraHTML+=`
+extra+=`
 <div class="card">
-🗳 Poll ${i}: What do you want?
-<button onclick="alert('You chose success')">Success</button>
-<button onclick="alert('You chose money')">Money</button>
+Poll ${i}: What do you want?
+<button onclick="alert('Success')">Success</button>
+<button onclick="alert('Money')">Money</button>
 </div>`;
 }
 
-document.getElementById("extraContent").innerHTML=extraHTML;
+document.getElementById("extraContent").innerHTML=extra;
 
 /* INIT */
 loadStories();
