@@ -10,140 +10,242 @@ body{background:black;color:white;font-family:Arial;}
 
 .nav{display:flex;justify-content:space-around;padding:15px;border-bottom:2px solid #00ffc3;}
 .nav button{background:none;border:none;color:white;font-size:4vw;font-weight:bold;}
+
 .active{color:#00ffc3;}
 
 .section{display:none;padding:20px;}
 .show{display:block;}
 
-.card{background:#111;padding:15px;margin:10px 0;border-radius:15px;}
-iframe,video{width:100%;height:220px;border-radius:10px;}
-textarea{width:100%;height:60px;margin-top:10px;}
-button{padding:8px;margin-top:5px;border:none;border-radius:10px;}
+h1{font-size:clamp(28px,6vw,60px);margin-bottom:20px;}
 
-.like{color:red;font-weight:bold;}
+.card{
+background:#111;
+padding:20px;
+margin:15px 0;
+border-radius:20px;
+cursor:pointer;
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+}
+
+/* reader */
+#reader{
+display:none;
+padding:20px;
+line-height:1.7;
+}
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
-<button onclick="showTab(event,'music')" class="active">Music</button>
-<button onclick="showTab(event,'videos')">Videos</button>
-<button onclick="showTab(event,'poll')">Poll</button>
+<button onclick="showTab(event,'stories')" class="active">Stories</button>
+<button onclick="showTab(event,'post')">Post</button>
 </div>
 
-<!-- MUSIC -->
-<div id="music" class="section show">
-<h1>🎵 Top 50+ Music</h1>
+<!-- STORIES -->
+<div id="stories" class="section show">
 
-<div class="card">
-<iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o"></iframe>
+<h1>📖 Stories Feed</h1>
+
+<div>
+<button onclick="filterCategory('All')">All</button>
+<button onclick="filterCategory('Hustle')">Hustle</button>
+<button onclick="filterCategory('Money')">Money</button>
+<button onclick="filterCategory('Motivation')">Motivation</button>
+<button onclick="filterCategory('Love')">Love</button>
+<button onclick="filterCategory('Pidgin')">Pidgin</button>
 </div>
 
-<div class="card">
-<iframe src="https://www.youtube.com/embed/jcg5YnZqtRo"></iframe>
-</div>
+<div id="storyFeed"></div>
 
-<div class="card">
-<iframe src="https://www.youtube.com/embed/ZbZSe6N_BXs"></iframe>
-</div>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/OPf0YbXqDm0"></iframe>
-</div>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/3JZ4pnNtyxQ"></iframe>
-</div>
-
-<!-- duplicate many for "50+" feel -->
-<div class="card"><iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o"></iframe></div>
-<div class="card"><iframe src="https://www.youtube.com/embed/jcg5YnZqtRo"></iframe></div>
-<div class="card"><iframe src="https://www.youtube.com/embed/ZbZSe6N_BXs"></iframe></div>
-<div class="card"><iframe src="https://www.youtube.com/embed/OPf0YbXqDm0"></iframe></div>
+<div id="extraContent"></div>
 
 </div>
 
-<!-- VIDEOS (TIKTOK STYLE) -->
-<div id="videos" class="section">
-<h1>📱 Short Videos</h1>
+<!-- POST -->
+<div id="post" class="section">
+<h1>✍️ Post Story</h1>
 
-<div class="card">
-<video controls>
-<source src="https://www.w3schools.com/html/mov_bbb.mp4">
-</video>
-
-<button onclick="like(this)">❤️ Like</button>
-<span>0</span>
-
-<textarea placeholder="Comment..."></textarea>
-<button onclick="comment(this)">Send</button>
-<div class="comments"></div>
+<input id="titleInput" placeholder="Title"><br><br>
+<textarea id="storyInput" placeholder="Write story..." style="width:100%;height:120px;"></textarea><br>
+<input id="imageInput" placeholder="Image URL"><br>
+<button onclick="addStory()">Post</button>
 
 </div>
 
-<div class="card">
-<video controls>
-<source src="https://www.w3schools.com/html/mov_bbb.mp4">
-</video>
+<!-- READER -->
+<div id="reader">
+<button onclick="goBack()">⬅ Back</button>
+<button onclick="continueReading()">▶ Continue</button>
+<button onclick="speakStory()">🔊 Listen</button>
 
-<button onclick="like(this)">❤️ Like</button>
-<span>0</span>
-
-<textarea placeholder="Comment..."></textarea>
-<button onclick="comment(this)">Send</button>
-<div class="comments"></div>
-
-</div>
-
-</div>
-
-<!-- POLL -->
-<div id="poll" class="section">
-<h1>🗳 Vote</h1>
-
-<p>What do you want in life?</p>
-
-<button onclick="vote('Money')">💰 Money</button>
-<button onclick="vote('Fame')">🌟 Fame</button>
-<button onclick="vote('Success')">🚀 Success</button>
-
-<p id="result"></p>
-
+<h2 id="title"></h2>
+<img id="img">
+<p id="content"></p>
 </div>
 
 <script>
 
-/* TAB */
+/* NAV */
 function showTab(e,id){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
 document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
 document.getElementById(id).classList.add("show");
 e.target.classList.add("active");
+reader.style.display="none";
 }
 
-/* LIKE */
-function like(btn){
-let count = btn.nextElementSibling;
-count.innerText = parseInt(count.innerText)+1;
+/* DATA */
+let categories=["Hustle","Money","Motivation","Love","Pidgin"];
+let stories=[];
+
+/* 🔥 500 STORIES */
+for(let i=1;i<=500;i++){
+let cat=categories[i%categories.length];
+stories.push({
+title:`🔥 ${cat} Story ${i}`,
+category:cat,
+content:`${cat} story ${i}.
+
+Stay focused.
+Stay consistent.
+
+Never give up.`,
+img:`https://picsum.photos/400/200?${i}`
+});
 }
 
-/* COMMENT */
-function comment(btn){
-let text = btn.previousElementSibling.value;
-let box = btn.nextElementSibling;
+/* 👑 SPECIAL STORY */
+stories.unshift({
+title:"👑 Queen Adaeze",
+category:"Legend",
+content:`A powerful African story about pride and wisdom.
 
-if(text){
-box.innerHTML += "<p>"+text+"</p>";
-btn.previousElementSibling.value="";
+Adaeze learned humility after making wrong choices.
+
+Lesson: choose wisely.`,
+img:"https://picsum.photos/400/200?queen"
+});
+
+/* LOAD */
+function loadStories(filter="All"){
+storyFeed.innerHTML="";
+
+stories.slice(0,50).forEach((s,i)=>{
+if(filter==="All"||s.category===filter){
+storyFeed.innerHTML+=`
+<div class="card" onclick="openStory(${i})">
+<h3>${s.title}</h3>
+<p>${s.category}</p>
+<img src="${s.img}">
+</div>`;
 }
+});
 }
 
-/* POLL */
-function vote(choice){
-localStorage.setItem("vote",choice);
-document.getElementById("result").innerText="You voted: "+choice;
+/* FILTER */
+function filterCategory(cat){
+loadStories(cat);
 }
+
+/* OPEN */
+function openStory(i){
+localStorage.setItem("lastStory",i);
+
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
+reader.style.display="block";
+
+title.innerText=stories[i].title;
+content.innerText=stories[i].content;
+img.src=stories[i].img;
+}
+
+/* BACK */
+function goBack(){
+reader.style.display="none";
+storiesSection=document.getElementById("stories");
+storiesSection.classList.add("show");
+}
+
+/* CONTINUE */
+function continueReading(){
+let i=localStorage.getItem("lastStory");
+if(i!==null) openStory(i);
+}
+
+/* VOICE */
+function speakStory(){
+let speech=new SpeechSynthesisUtterance(content.innerText);
+speechSynthesis.speak(speech);
+}
+
+/* ADD STORY */
+function addStory(){
+let t=titleInput.value;
+let c=storyInput.value;
+let i=imageInput.value||"https://picsum.photos/400/200";
+
+if(!t||!c) return alert("Fill everything");
+
+stories.unshift({title:t,content:c,img:i,category:"User"});
+loadStories();
+}
+
+/* ========================= */
+/* 🔥 EXTRA (5000+ SYSTEM) */
+/* ========================= */
+
+let extraHTML="";
+
+/* POSTS */
+for(let i=1;i<=100;i++){
+extraHTML+=`<div class="card">🔥 Post ${i}: Stay consistent and grow daily.</div>`;
+}
+
+/* TIPS */
+for(let i=1;i<=100;i++){
+extraHTML+=`<div class="card">💡 Tip ${i}: Learn skills, avoid distractions.</div>`;
+}
+
+/* MUSIC */
+for(let i=1;i<=20;i++){
+extraHTML+=`
+<div class="card">
+🎵 Music ${i}
+<audio controls>
+<source src="https://www.w3schools.com/html/horse.mp3">
+</audio>
+</div>`;
+}
+
+/* POLLS */
+for(let i=1;i<=20;i++){
+extraHTML+=`
+<div class="card">
+🗳 Poll ${i}: What do you want?
+<button onclick="alert('You chose success')">Success</button>
+<button onclick="alert('You chose money')">Money</button>
+</div>`;
+}
+
+document.getElementById("extraContent").innerHTML=extraHTML;
+
+/* INIT */
+loadStories();
 
 </script>
 
