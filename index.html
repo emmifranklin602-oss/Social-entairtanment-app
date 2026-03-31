@@ -58,7 +58,6 @@ font-size:16px;
 
 <body>
 
-<!-- NAV -->
 <div class="nav">
 <button onclick="showTab(event,'stories')" class="active">Stories</button>
 <button onclick="showTab(event,'post')">Post</button>
@@ -95,9 +94,14 @@ font-size:16px;
 <!-- READER -->
 <div id="reader">
 <button onclick="goBack()">⬅ Back</button>
+<button onclick="speakNow()">🔊 Read</button>
 <h2 id="title"></h2>
 <img id="img">
 <p id="content"></p>
+
+<!-- VIDEO INSIDE READER -->
+<div id="videoBox"></div>
+
 </div>
 
 <script>
@@ -111,19 +115,23 @@ e.target.classList.add("active");
 reader.style.display="none";
 }
 
-/* ================= STORIES ================= */
+/* 🔊 SPEAK FUNCTION */
+function speakNow(){
+let text = document.getElementById("content").innerText;
+let speech = new SpeechSynthesisUtterance(text);
+speech.rate = 1;
+speech.pitch = 1;
+speechSynthesis.speak(speech);
+}
+
+/* STORIES */
 let stories=[];
-for(let i=1;i<=50;i++){
+for(let i=1;i<=40;i++){
 stories.push({
 title:"🔥 Story "+i,
 img:`https://picsum.photos/400/200?story${i}`,
-content:`This is a deep story ${i}.
-
-Life is not easy. Many times you will fail.
-
-But if you keep going, you will succeed.
-
-Never give up. Stay focused. Stay strong.`
+content:`This is story ${i}. Life is hard but never give up. Keep pushing and growing.`,
+video:"Sj6Wdr2vB7o"
 });
 }
 
@@ -131,24 +139,27 @@ function loadStories(){
 storyFeed.innerHTML="";
 stories.forEach((s,i)=>{
 storyFeed.innerHTML+=`
-<div class="card" onclick="openStory(${i},'story')">
+<div class="card" onclick="openStory(${i})">
 <h3>${s.title}</h3>
 <img src="${s.img}">
-<p>Tap to read full story</p>
 </div>`;
 });
 }
 
-/* ================= POSTS ================= */
+function openStory(i){
+openReader(stories[i].title,stories[i].img,stories[i].content,stories[i].video);
+}
+
+/* POSTS */
 let posts=[];
+
 function addPost(){
 let val=postInput.value;
-
 posts.unshift({
 text:val,
-img:`https://picsum.photos/400/200?post${Math.random()}`
+img:`https://picsum.photos/400/200?post${Math.random()}`,
+video:"jcg5YnZqtRo"
 });
-
 renderPosts();
 }
 
@@ -164,24 +175,17 @@ postFeed.innerHTML+=`
 }
 
 function openPost(i){
-reader.style.display="block";
-hideAll();
-title.innerText="Post";
-img.src=posts[i].img;
-content.innerText=posts[i].text+" This is expanded content with more explanation and details.";
+openReader("Post",posts[i].img,posts[i].text,"jcg5YnZqtRo");
 }
 
-/* ================= NEWS ================= */
+/* NEWS */
 let news=[];
-for(let i=1;i<=30;i++){
+for(let i=1;i<=20;i++){
 news.push({
 title:"📰 News "+i,
 img:`https://picsum.photos/400/200?news${i}`,
-content:`Breaking news ${i}.
-
-This is detailed news content explaining events, economy, technology, and society.
-
-Stay informed and updated.`
+content:`Detailed news ${i}. This explains events and updates happening around the world.`,
+video:"3JZ4pnNtyxQ"
 });
 }
 
@@ -192,25 +196,21 @@ newsFeed.innerHTML+=`
 <div class="card" onclick="openNews(${i})">
 <h3>${n.title}</h3>
 <img src="${n.img}">
-<p>Tap to read</p>
 </div>`;
 });
 }
 
 function openNews(i){
-reader.style.display="block";
-hideAll();
-title.innerText=news[i].title;
-img.src=news[i].img;
-content.innerText=news[i].content;
+openReader(news[i].title,news[i].img,news[i].content,news[i].video);
 }
 
-/* ================= COMMUNITY ================= */
+/* COMMUNITY */
 let community=[];
-for(let i=1;i<=30;i++){
+for(let i=1;i<=20;i++){
 community.push({
-text:"🔥 Community discussion "+i,
-img:`https://picsum.photos/400/200?community${i}`
+text:"🔥 Community post "+i,
+img:`https://picsum.photos/400/200?community${i}`,
+video:"OPf0YbXqDm0"
 });
 }
 
@@ -226,50 +226,29 @@ communityFeed.innerHTML+=`
 }
 
 function openCommunity(i){
-reader.style.display="block";
-hideAll();
-title.innerText="Community";
-img.src=community[i].img;
-content.innerText=community[i].text+" More detailed discussion and interaction.";
+openReader("Community",community[i].img,community[i].text,"OPf0YbXqDm0");
 }
 
-/* ================= VIDEOS + MUSIC ================= */
+/* READER CORE */
+function openReader(t,i,c,v){
+reader.style.display="block";
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
 
-function addMedia(){
+title.innerText=t;
+img.src=i;
+content.innerText=c;
 
-let media = document.createElement("div");
-
-media.innerHTML = `
-<h2>🎥 Videos</h2>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o" allowfullscreen></iframe>
-</div>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/jcg5YnZqtRo" allowfullscreen></iframe>
-</div>
-
-<h2>🎵 Music Videos</h2>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/hVEp-P2-rqY" allowfullscreen></iframe>
-</div>
-
-<div class="card">
-<iframe src="https://www.youtube.com/embed/0zB6rWvL2P8" allowfullscreen></iframe>
-</div>
+videoBox.innerHTML=`
+<iframe src="https://www.youtube.com/embed/${v}" allowfullscreen></iframe>
 `;
 
-document.getElementById("stories").appendChild(media);
-
+/* AUTO SPEAK */
+setTimeout(()=>{
+speakNow();
+},500);
 }
 
-/* ================= HELPERS ================= */
-function hideAll(){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
-}
-
+/* BACK */
 function goBack(){
 reader.style.display="none";
 document.getElementById("stories").classList.add("show");
@@ -279,7 +258,6 @@ document.getElementById("stories").classList.add("show");
 loadStories();
 loadNews();
 loadCommunity();
-addMedia();
 
 </script>
 
