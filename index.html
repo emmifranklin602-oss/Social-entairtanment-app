@@ -27,21 +27,11 @@ border:none;
 color:white;
 font-size:4vw;
 font-weight:bold;
+cursor:pointer;
 }
 
 .active{color:#00ffc3;}
 
-/* SEARCH */
-.search{
-width:90%;
-margin:15px auto;
-display:block;
-padding:15px;
-border-radius:20px;
-font-size:18px;
-}
-
-/* SECTION */
 .section{display:none;padding:20px;}
 .show{display:block;}
 
@@ -50,13 +40,11 @@ font-size:clamp(28px,6vw,60px);
 margin-bottom:20px;
 }
 
-/* CARD */
 .card{
 background:#111;
 padding:20px;
 margin:15px 0;
 border-radius:20px;
-font-size:18px;
 cursor:pointer;
 }
 
@@ -66,25 +54,23 @@ border-radius:10px;
 margin-top:10px;
 }
 
-/* READER */
-#reader{display:none;padding:20px;}
-.back{
-padding:10px;
-background:#00ffc3;
-border:none;
-margin-bottom:10px;
-}
-
-/* POST BOX */
-textarea{
-width:100%;
-height:100px;
-margin-top:10px;
-}
-
 button{
 padding:10px;
-margin-top:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+}
+
+/* READER */
+#reader{
+display:none;
+padding:20px;
+line-height:1.7;
+}
+
+#reader img{
+width:100%;
+margin:10px 0;
 }
 
 </style>
@@ -98,11 +84,20 @@ margin-top:10px;
 <button onclick="showTab(event,'post')">Post</button>
 </div>
 
-<input class="search" placeholder="Search stories..." onkeyup="searchContent()">
-
 <!-- STORIES -->
 <div id="stories" class="section show">
+
 <h1>📖 Stories Feed</h1>
+
+<!-- CATEGORY BUTTONS -->
+<div>
+<button onclick="filterCategory('All')">All</button>
+<button onclick="filterCategory('Hustle')">Hustle</button>
+<button onclick="filterCategory('Money')">Money</button>
+<button onclick="filterCategory('Motivation')">Motivation</button>
+<button onclick="filterCategory('Love')">Love</button>
+<button onclick="filterCategory('Pidgin')">Pidgin</button>
+</div>
 
 <div id="storyFeed"></div>
 
@@ -112,19 +107,24 @@ margin-top:10px;
 <div id="post" class="section">
 <h1>✍️ Post Story</h1>
 
-<input id="titleInput" placeholder="Title"><br>
-<textarea id="storyInput" placeholder="Write your story..."></textarea>
-<input id="imageInput" placeholder="Image URL (optional)">
+<input id="titleInput" placeholder="Title"><br><br>
+<textarea id="storyInput" placeholder="Write story..." style="width:100%;height:120px;"></textarea><br>
+<input id="imageInput" placeholder="Image URL (optional)"><br>
 <button onclick="addStory()">Post</button>
 
 </div>
 
 <!-- READER -->
 <div id="reader">
-<button class="back" onclick="goBack()">⬅ Back</button>
+
+<button onclick="goBack()">⬅ Back</button>
+<button onclick="continueReading()">▶ Continue</button>
+<button onclick="speakStory()">🔊 Listen</button>
+
 <h2 id="title"></h2>
-<img id="img" style="width:100%;margin:10px 0;">
+<img id="img">
 <p id="content"></p>
+
 </div>
 
 <script>
@@ -138,54 +138,70 @@ e.target.classList.add("active");
 document.getElementById("reader").style.display="none";
 }
 
-/* SEARCH */
-function searchContent(){
-let input=document.querySelector(".search").value.toLowerCase();
-document.querySelectorAll(".card").forEach(c=>{
-c.style.display=c.innerText.toLowerCase().includes(input)?"block":"none";
+/* DATA */
+let categories=["Hustle","Money","Motivation","Love","Pidgin"];
+let stories=[];
+
+/* GENERATE STORIES */
+for(let i=1;i<=120;i++){
+let cat=categories[i%categories.length];
+
+stories.push({
+title:`🔥 ${cat} Story ${i}`,
+category:cat,
+content:generateStory(cat,i),
+img:`https://picsum.photos/400/200?${i}`
 });
 }
 
-/* DEFAULT STORIES */
-let stories=[
-{
-title:"🔥 From Nothing to Success",
-content:"He started with nothing but belief. Every day he worked until success came.",
-img:"https://picsum.photos/400/200?1"
-},
-{
-title:"💡 No Give Up (Pidgin)",
-content:"No matter wetin happen, no give up. Life fit hard but you go make am.",
-img:"https://picsum.photos/400/200?2"
-},
-{
-title:"🚀 Hustle Story",
-content:"One boy dey hustle everyday, small small e grow reach success.",
-img:"https://picsum.photos/400/200?3"
-},
-{
-title:"😂 Funny Life (Pidgin)",
-content:"Life no be beans oh, but if you laugh, e go soft small.",
-img:"https://picsum.photos/400/200?4"
-}
-];
+/* STORY TEXT */
+function generateStory(cat,i){
 
-/* LOAD STORIES */
-function loadStories(){
+if(cat==="Pidgin"){
+return `Omo story ${i}.
+
+Life no easy but no give up.
+Small small you go reach.
+Just dey move forward everyday.`;
+}
+
+return `${cat} story ${i}.
+
+Life is a journey.
+
+Stay focused.
+Stay consistent.
+
+Success will come.`;
+}
+
+/* LOAD */
+function loadStories(filter="All"){
 let feed=document.getElementById("storyFeed");
 feed.innerHTML="";
 
 stories.forEach((s,i)=>{
+if(filter==="All"||s.category===filter){
 feed.innerHTML+=`
 <div class="card" onclick="openStory(${i})">
 <h3>${s.title}</h3>
+<p>${s.category}</p>
 <img src="${s.img}">
 </div>`;
+}
 });
 }
 
-/* OPEN STORY */
+/* FILTER */
+function filterCategory(cat){
+loadStories(cat);
+}
+
+/* OPEN */
 function openStory(i){
+
+localStorage.setItem("lastStory",i);
+
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
 document.getElementById("reader").style.display="block";
 
@@ -200,22 +216,31 @@ document.getElementById("reader").style.display="none";
 document.getElementById("stories").classList.add("show");
 }
 
+/* CONTINUE */
+function continueReading(){
+let i=localStorage.getItem("lastStory");
+if(i!==null) openStory(i);
+}
+
+/* VOICE */
+function speakStory(){
+let text=document.getElementById("content").innerText;
+let speech=new SpeechSynthesisUtterance(text);
+speechSynthesis.speak(speech);
+}
+
 /* ADD STORY */
 function addStory(){
 let title=document.getElementById("titleInput").value;
 let content=document.getElementById("storyInput").value;
-let img=document.getElementById("imageInput").value || "https://picsum.photos/400/200";
+let img=document.getElementById("imageInput").value||"https://picsum.photos/400/200";
 
-if(!title || !content) return alert("Fill everything");
+if(!title||!content) return alert("Fill everything");
 
-stories.unshift({title,content,img});
+stories.unshift({title,content,img,category:"User"});
 loadStories();
 
-document.getElementById("titleInput").value="";
-document.getElementById("storyInput").value="";
-document.getElementById("imageInput").value="";
-
-alert("Story posted!");
+alert("Posted!");
 }
 
 /* INIT */
