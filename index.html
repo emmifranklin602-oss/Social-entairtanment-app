@@ -1,164 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Emmanuel's Entertainment Universe</title>
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #111;
-      padding: 20px;
-      position: sticky;
-      top: 0;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 15px;
-      border: none;
-      background: none;
-      color: #888;
-      font-size: 22px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .tab-btn.active {
-      color: #00ffcc;
-      border-bottom: 4px solid #00ffcc;
-    }
-    .tab-content {
-      flex: 1;
-      overflow-y: auto;
-      display: none;
-      padding: 25px;
-      font-size: 20px;
-    }
-    .row {
-      background: #1a1a1a;
-      margin: 15px 0;
-      padding: 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .row:hover {
-      background: #333;
-    }
-    .story-chapter {
-      margin-top: 25px;
-      padding: 25px;
-      background: #222;
-      border-radius: 12px;
-      line-height: 1.8;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    h2 { color: #00ffcc; font-size: 28px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUPER PLATFORM</title>
+
+<style>
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY */
+body {
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+/* NAVBAR */
+.nav {
+    display: flex;
+    justify-content: space-around;
+    background: #000;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid #00ffc3;
+}
+
+.nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 4vw;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ACTIVE TAB */
+.active {
+    color: #00ffc3;
+}
+
+/* SEARCH */
+.search {
+    width: 90%;
+    margin: 20px auto;
+    display: block;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+}
+
+/* SECTION */
+.section {
+    display: none;
+    padding: 20px;
+}
+
+.show {
+    display: block;
+}
+
+/* TITLE */
+h1 {
+    font-size: clamp(28px, 6vw, 60px);
+    margin-bottom: 20px;
+}
+
+/* CARDS */
+.card {
+    width: 100%;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 15px;
+    background: linear-gradient(90deg, #111, #222);
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+/* HOVER */
+.card:hover {
+    transform: scale(1.05);
+    background: #333;
+}
+
+/* ICON */
+.icon {
+    font-size: 25px;
+    margin-right: 10px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #111;
+    margin-top: 30px;
+}
+
+/* BUTTON */
+.link-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background: #00ffc3;
+    color: black;
+    text-align: center;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('stories')">Stories</button>
-    <button class="tab-btn" onclick="showTab('entertainment')">Entertainment</button>
-    <button class="tab-btn" onclick="showTab('apps')">Apps</button>
-    <button class="tab-btn" onclick="showTab('tips')">Tips</button>
-    <button class="tab-btn" onclick="showTab('knowledge')">Knowledge</button>
-    <button class="tab-btn" onclick="showTab('extras')">Extras</button>
-  </div>
 
-  <!-- STORIES -->
-  <div id="stories" class="tab-content" style="display:block;">
-    <h2>Stories</h2>
-    <div class="row" onclick="openStory('lostChild')">1. Lost Child Story</div>
-    <div class="row" onclick="openStory('love')">2. Love Story</div>
-    <div class="row" onclick="openStory('hustle')">3. Hustle Story</div>
-    <div class="row" onclick="openStory('comedy')">4. Comedy Story</div>
-    <div class="row" onclick="openStory('motivation')">5. Motivation Story</div>
-    <div id="storyDisplay" class="story-chapter"></div>
-  </div>
+<!-- NAV -->
+<div class="nav">
+    <button onclick="showTab('apps')" class="active">Apps</button>
+    <button onclick="showTab('entertainment')">Entertainment</button>
+    <button onclick="showTab('tips')">Tips</button>
+    <button onclick="showTab('knowledge')">Knowledge</button>
+</div>
 
-  <!-- ENTERTAINMENT -->
-  <div id="entertainment" class="tab-content">
-    <h2>Entertainment</h2>
-    <div class="row">1. 🎵 Afrobeats Playlist – Burna Boy, Wizkid, Davido</div>
-    <div class="row">2. 🎤 Musicians – Tiwa Savage, Olamide, Rema</div>
-    <div class="row">3. 🎬 Nollywood Classic – Living in Bondage summary</div>
-    <div class="row">4. 😂 Comedy Skit – "Naija hustle no be beans!"</div>
-  </div>
+<!-- SEARCH -->
+<input type="text" class="search" placeholder="Search anything...">
 
-  <!-- APPS -->
-  <div id="apps" class="tab-content">
-    <h2>Valuable Apps</h2>
-    <div class="row">1. WhatsApp – Chat & connect</div>
-    <div class="row">2. Instagram – Share photos & reels</div>
-    <div class="row">3. Spotify – Stream music</div>
-    <div class="row">4. Canva – Design graphics</div>
-    <div class="row">5. Paystack – Online payments</div>
-  </div>
+<!-- APPS -->
+<div id="apps" class="section show">
+<h1>🔥 Valuable Apps</h1>
 
-  <!-- TIPS -->
-  <div id="tips" class="tab-content">
-    <h2>Life & Business Tips</h2>
-    <div class="row">1. Hustle smart, not just hard.</div>
-    <div class="row">2. Save small, invest big.</div>
-    <div class="row">3. Learn skills online daily.</div>
-    <div class="row">4. Network with people wey fit help you grow.</div>
-    <div class="row">5. Balance hustle with enjoyment.</div>
-  </div>
+<div class="card">📱 WhatsApp – Chat & connect
+<a href="https://wa.me" class="link-btn">Open</a></div>
 
-  <!-- KNOWLEDGE -->
-  <div id="knowledge" class="tab-content">
-    <h2>Knowledge Hub</h2>
-    <div class="row">1. Tech – How Web3 go change Naija business</div>
-    <div class="row">2. Lifestyle – Top 5 ways to enjoy Port Harcourt weekend</div>
-    <div class="row">3. Culture – Why Pidgin dey unite Nigerians</div>
-  </div>
+<div class="card">📸 Instagram – Share photos
+<a href="https://instagram.com" class="link-btn">Open</a></div>
 
-  <!-- EXTRAS -->
-  <div id="extras" class="tab-content">
-    <h2>Extras</h2>
-    <div class="row">1. ✨ Fun Fact – The word "Naija" dey represent unity + vibe</div>
-    <div class="row">2. 💬 Quote – "No matter how e be, better days dey come"</div>
-    <div class="row">3. 📅 Daily Update – Today na March 31, 2026—make you shine!</div>
-  </div>
+<div class="card">🎵 Spotify – Music streaming
+<a href="https://spotify.com" class="link-btn">Open</a></div>
 
-  <script>
-    function showTab(id) {
-      document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(id).style.display = 'block';
-      event.target.classList.add('active');
-    }
+<div class="card">🎨 Canva – Design graphics
+<a href="https://canva.com" class="link-btn">Open</a></div>
 
-    function openStory(type) {
-      let storyText = "";
-      if (type === "lostChild") {
-        storyText = "When I was a child, the village dey quiet until one pikin waka comot. From the beginning, everybody dey search—mothers dey cry, fathers dey shout. Musicians gather sing hope songs, say 'we go find am, we no go tire.' The story continue with twists, until the child return with lessons of courage and unity...";
-      }
-      if (type === "love") {
-        storyText = "From the beginning, Emeka see Ada for bus stop. Him heart dey beat like drum. The day wey start ordinary turn to wahala wey sweet and bitter...";
-      }
-      if (type === "hustle") {
-        storyText = "From the beginning, na Monday morning. Lagos traffic choke, but Chinedu no gree. Him dey sell gala, pure water, and still dey dream big...";
-      }
-      if (type === "comedy") {
-        storyText = "From the beginning, one man waka enter shop ask for free bread. The seller laugh tire, say 'bros, na only smile free for here!'...";
-      }
-      if (type === "motivation") {
-        storyText = "From the beginning, na small boy wey no get shoe. Today, na CEO wey dey inspire thousands with him story...";
-      }
-      document.getElementById("storyDisplay").innerText = storyText;
-    }
-  </script>
+<div class="card">💰 Paystack – Payments
+<a href="https://paystack.com" class="link-btn">Open</a></div>
+
+</div>
+
+<!-- ENTERTAINMENT -->
+<div id="entertainment" class="section">
+<h1>🎬 Entertainment</h1>
+
+<div class="card">🎥 Watch Videos</div>
+<div class="card">🎮 Play Games</div>
+<div class="card">🎵 Listen to Music</div>
+<div class="card">😂 Memes & Fun</div>
+
+</div>
+
+<!-- TIPS -->
+<div id="tips" class="section">
+<h1>💡 Tips</h1>
+
+<div class="card">🔥 How to make money online</div>
+<div class="card">🚀 How to grow fast</div>
+<div class="card">📈 Productivity hacks</div>
+
+</div>
+
+<!-- KNOWLEDGE -->
+<div id="knowledge" class="section">
+<h1>📚 Knowledge</h1>
+
+<div class="card">🤖 Learn AI</div>
+<div class="card">💻 Learn Coding</div>
+<div class="card">📊 Business Ideas</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+<h2>🔥 SUPER PLATFORM</h2>
+<p>All-in-one powerful website</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+function showTab(tabId) {
+
+    let sections = document.querySelectorAll(".section");
+    let buttons = document.querySelectorAll(".nav button");
+
+    sections.forEach(sec => sec.classList.remove("show"));
+    buttons.forEach(btn => btn.classList.remove("active"));
+
+    document.getElementById(tabId).classList.add("show");
+
+    event.target.classList.add("active");
+}
+
+</script>
+
 </body>
 </html>
