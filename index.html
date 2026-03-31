@@ -6,124 +6,109 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+body{background:black;color:white;font-family:Arial;}
 
-body{
-background:black;
-color:white;
-font-family:Arial;
-}
-
-/* NAV */
-.nav{
-display:flex;
-justify-content:space-around;
-padding:15px;
-border-bottom:2px solid #00ffc3;
-}
-
-.nav button{
-background:none;
-border:none;
-color:white;
-font-size:4vw;
-font-weight:bold;
-cursor:pointer;
-}
-
+.nav{display:flex;justify-content:space-around;padding:15px;border-bottom:2px solid #00ffc3;}
+.nav button{background:none;border:none;color:white;font-size:4vw;font-weight:bold;}
 .active{color:#00ffc3;}
 
 .section{display:none;padding:20px;}
 .show{display:block;}
 
-h1{
-font-size:clamp(28px,6vw,60px);
-margin-bottom:20px;
-}
+.card{background:#111;padding:15px;margin:10px 0;border-radius:15px;}
+iframe,video{width:100%;height:220px;border-radius:10px;}
+textarea{width:100%;height:60px;margin-top:10px;}
+button{padding:8px;margin-top:5px;border:none;border-radius:10px;}
 
-.card{
-background:#111;
-padding:20px;
-margin:15px 0;
-border-radius:20px;
-cursor:pointer;
-}
-
-.card img{
-width:100%;
-border-radius:10px;
-margin-top:10px;
-}
-
-button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:10px;
-}
-
-/* READER */
-#reader{
-display:none;
-padding:20px;
-line-height:1.7;
-}
-
-#reader img{
-width:100%;
-margin:10px 0;
-}
-
+.like{color:red;font-weight:bold;}
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
 <div class="nav">
-<button onclick="showTab(event,'stories')" class="active">Stories</button>
-<button onclick="showTab(event,'post')">Post</button>
+<button onclick="showTab(event,'music')" class="active">Music</button>
+<button onclick="showTab(event,'videos')">Videos</button>
+<button onclick="showTab(event,'poll')">Poll</button>
 </div>
 
-<!-- STORIES -->
-<div id="stories" class="section show">
+<!-- MUSIC -->
+<div id="music" class="section show">
+<h1>🎵 Top 50+ Music</h1>
 
-<h1>📖 Stories Feed</h1>
-
-<!-- CATEGORY BUTTONS -->
-<div>
-<button onclick="filterCategory('All')">All</button>
-<button onclick="filterCategory('Hustle')">Hustle</button>
-<button onclick="filterCategory('Money')">Money</button>
-<button onclick="filterCategory('Motivation')">Motivation</button>
-<button onclick="filterCategory('Love')">Love</button>
-<button onclick="filterCategory('Pidgin')">Pidgin</button>
+<div class="card">
+<iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o"></iframe>
 </div>
 
-<div id="storyFeed"></div>
+<div class="card">
+<iframe src="https://www.youtube.com/embed/jcg5YnZqtRo"></iframe>
+</div>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/ZbZSe6N_BXs"></iframe>
+</div>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/OPf0YbXqDm0"></iframe>
+</div>
+
+<div class="card">
+<iframe src="https://www.youtube.com/embed/3JZ4pnNtyxQ"></iframe>
+</div>
+
+<!-- duplicate many for "50+" feel -->
+<div class="card"><iframe src="https://www.youtube.com/embed/Sj6Wdr2vB7o"></iframe></div>
+<div class="card"><iframe src="https://www.youtube.com/embed/jcg5YnZqtRo"></iframe></div>
+<div class="card"><iframe src="https://www.youtube.com/embed/ZbZSe6N_BXs"></iframe></div>
+<div class="card"><iframe src="https://www.youtube.com/embed/OPf0YbXqDm0"></iframe></div>
 
 </div>
 
-<!-- POST -->
-<div id="post" class="section">
-<h1>✍️ Post Story</h1>
+<!-- VIDEOS (TIKTOK STYLE) -->
+<div id="videos" class="section">
+<h1>📱 Short Videos</h1>
 
-<input id="titleInput" placeholder="Title"><br><br>
-<textarea id="storyInput" placeholder="Write story..." style="width:100%;height:120px;"></textarea><br>
-<input id="imageInput" placeholder="Image URL (optional)"><br>
-<button onclick="addStory()">Post</button>
+<div class="card">
+<video controls>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
+
+<button onclick="like(this)">❤️ Like</button>
+<span>0</span>
+
+<textarea placeholder="Comment..."></textarea>
+<button onclick="comment(this)">Send</button>
+<div class="comments"></div>
 
 </div>
 
-<!-- READER -->
-<div id="reader">
+<div class="card">
+<video controls>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
 
-<button onclick="goBack()">⬅ Back</button>
-<button onclick="continueReading()">▶ Continue</button>
-<button onclick="speakStory()">🔊 Listen</button>
+<button onclick="like(this)">❤️ Like</button>
+<span>0</span>
 
-<h2 id="title"></h2>
-<img id="img">
-<p id="content"></p>
+<textarea placeholder="Comment..."></textarea>
+<button onclick="comment(this)">Send</button>
+<div class="comments"></div>
+
+</div>
+
+</div>
+
+<!-- POLL -->
+<div id="poll" class="section">
+<h1>🗳 Vote</h1>
+
+<p>What do you want in life?</p>
+
+<button onclick="vote('Money')">💰 Money</button>
+<button onclick="vote('Fame')">🌟 Fame</button>
+<button onclick="vote('Success')">🚀 Success</button>
+
+<p id="result"></p>
 
 </div>
 
@@ -135,116 +120,30 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
 document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
 document.getElementById(id).classList.add("show");
 e.target.classList.add("active");
-document.getElementById("reader").style.display="none";
 }
 
-/* DATA */
-let categories=["Hustle","Money","Motivation","Love","Pidgin"];
-let stories=[];
-
-/* GENERATE STORIES */
-for(let i=1;i<=120;i++){
-let cat=categories[i%categories.length];
-
-stories.push({
-title:`🔥 ${cat} Story ${i}`,
-category:cat,
-content:generateStory(cat,i),
-img:`https://picsum.photos/400/200?${i}`
-});
+/* LIKE */
+function like(btn){
+let count = btn.nextElementSibling;
+count.innerText = parseInt(count.innerText)+1;
 }
 
-/* STORY TEXT */
-function generateStory(cat,i){
+/* COMMENT */
+function comment(btn){
+let text = btn.previousElementSibling.value;
+let box = btn.nextElementSibling;
 
-if(cat==="Pidgin"){
-return `Omo story ${i}.
-
-Life no easy but no give up.
-Small small you go reach.
-Just dey move forward everyday.`;
+if(text){
+box.innerHTML += "<p>"+text+"</p>";
+btn.previousElementSibling.value="";
+}
 }
 
-return `${cat} story ${i}.
-
-Life is a journey.
-
-Stay focused.
-Stay consistent.
-
-Success will come.`;
+/* POLL */
+function vote(choice){
+localStorage.setItem("vote",choice);
+document.getElementById("result").innerText="You voted: "+choice;
 }
-
-/* LOAD */
-function loadStories(filter="All"){
-let feed=document.getElementById("storyFeed");
-feed.innerHTML="";
-
-stories.forEach((s,i)=>{
-if(filter==="All"||s.category===filter){
-feed.innerHTML+=`
-<div class="card" onclick="openStory(${i})">
-<h3>${s.title}</h3>
-<p>${s.category}</p>
-<img src="${s.img}">
-</div>`;
-}
-});
-}
-
-/* FILTER */
-function filterCategory(cat){
-loadStories(cat);
-}
-
-/* OPEN */
-function openStory(i){
-
-localStorage.setItem("lastStory",i);
-
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("show"));
-document.getElementById("reader").style.display="block";
-
-document.getElementById("title").innerText=stories[i].title;
-document.getElementById("content").innerText=stories[i].content;
-document.getElementById("img").src=stories[i].img;
-}
-
-/* BACK */
-function goBack(){
-document.getElementById("reader").style.display="none";
-document.getElementById("stories").classList.add("show");
-}
-
-/* CONTINUE */
-function continueReading(){
-let i=localStorage.getItem("lastStory");
-if(i!==null) openStory(i);
-}
-
-/* VOICE */
-function speakStory(){
-let text=document.getElementById("content").innerText;
-let speech=new SpeechSynthesisUtterance(text);
-speechSynthesis.speak(speech);
-}
-
-/* ADD STORY */
-function addStory(){
-let title=document.getElementById("titleInput").value;
-let content=document.getElementById("storyInput").value;
-let img=document.getElementById("imageInput").value||"https://picsum.photos/400/200";
-
-if(!title||!content) return alert("Fill everything");
-
-stories.unshift({title,content,img,category:"User"});
-loadStories();
-
-alert("Posted!");
-}
-
-/* INIT */
-loadStories();
 
 </script>
 
